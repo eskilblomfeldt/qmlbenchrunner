@@ -4,15 +4,13 @@ import os
 import sys
 import subprocess
 import logging
-from socket import gethostname
 import requests
 import json
 
-HOSTNAME = "10.213.255.45"
+HOSTNAME = "10.213.255.45:8086"
+#HOSTNAME = "localhost:8086"
 
 def submit_output(output, branch, qtBaseHead, qtDeclarativeHead):
-    hostname = gethostname()
-
     tree = json.loads(output)
     gpuVendor = tree["opengl"]["vendor"]
     driverVersion = tree["opengl"]["version"]
@@ -31,7 +29,7 @@ def submit_output(output, branch, qtBaseHead, qtDeclarativeHead):
                       'qtDeclarativeHead="' + qtDeclarativeHead + '"',)
 
             data = '%s,%s %s' % (basename, ','.join(tags), ','.join(fields))
-            result = requests.post("http://10.213.255.45:8086/write?db=qmlbench", data=data.encode('utf-8'))
+            result = requests.post("http://%s/write?db=qmlbench" % HOSTNAME, data=data.encode('utf-8'))
             print(data)
             print(result)
 
