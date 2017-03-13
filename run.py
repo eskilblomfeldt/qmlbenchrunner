@@ -4,15 +4,12 @@ import os
 import sys
 import subprocess
 import logging
-from socket import gethostname
 import requests
 import json
 
 HOSTNAME = "10.213.255.45"
 
 def submit_output(output, branch, qtBaseHead, qtDeclarativeHead):
-    hostname = gethostname()
-
     tree = json.loads(output)
     gpuVendor = tree["opengl"]["vendor"]
     driverVersion = tree["opengl"]["version"]
