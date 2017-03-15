@@ -43,8 +43,8 @@
         "iconColor": "rgba(255, 96, 96, 1)",
         "limit": 100,
         "name": "annotations",
-        "query": "SELECT text, title, tagText FROM annotations WHERE $timeFilter",
-        "tagsColumn": "tagText",
+        "query": "SELECT text, title, tagText, branch FROM annotations WHERE $timeFilter AND (\"branch\" =~ /^$branch$/ OR \"branch\" =~ /^$/)",
+        "tagsColumn": "tagText, branch",
         "textColumn": "text",
         "titleColumn": "title",
         "type": "alert"
@@ -318,5 +318,5 @@
   },
   "timezone": "browser",
   "title": "QmlBench Hardware",
-  "version": 13
+  "version": 16
 }
