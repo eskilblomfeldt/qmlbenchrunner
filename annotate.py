@@ -9,7 +9,7 @@ import json
 HOSTNAME = "10.213.255.45:8086"
 #HOSTNAME = "localhost:8086"
 
-def post_annotation(title, text, tag):
+def post_annotation(title, text, tag, branch):
     # TODO: we could consider splitting tag on , and inserting multiple annotations
     # this is required, unfortunately, as Grafana's InfluxDB source requires that you
     # fetch tags from multiple fields rather than turning a single field into
@@ -17,6 +17,7 @@ def post_annotation(title, text, tag):
     fields = ('title=\"%s\"' % title,
               'text=\"%s\"' % text,
               'tagText=\"%s\"' % tag,
+              'branch=\"%s\"' % branch,
               )
     data = 'annotations %s' % (','.join(fields))
     result = requests.post("http://%s/write?db=qmlbench" % HOSTNAME, data=data.encode('utf-8'))
@@ -29,8 +30,9 @@ if __name__ == "__main__":
     parser.add_argument("--title", help="title of the annotation (e.g. --title=\"qtbase update\")")
     parser.add_argument("--tag", help="a tag for the annotation")
     parser.add_argument("--text", help="text for the annotation")
+    parser.add_argument("--branch", help="the branch the annotation is relevant to (e.g. 5.6, dev")
     args = parser.parse_args(sys.argv[1:])
     print("Adding annotation: " + args.title)
-    post_annotation(args.title, args.text, args.tag)
+    post_annotation(args.title, args.text, args.tag, args.branch)
 
 
