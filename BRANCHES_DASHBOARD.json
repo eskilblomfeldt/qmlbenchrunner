@@ -101,13 +101,21 @@
           "renderer": "flot",
           "repeat": "benchmark",
           "seriesOverride": [],
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "/CoV.+/",
+              "fill": 0,
+              "stack": false,
+              "yaxis": 2,
+              "zindex": 3
+            }
+          ],
           "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$tag_branch $tag_hardwareId",
+              "alias": "Result ($tag_branch $tag_hardwareId)",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -175,6 +183,73 @@
                   "value": "/^$hardwareId$/"
                 }
               ]
+            },
+            {
+              "alias": "CoV ($tag_branch $tag_hardwareId)",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "branch"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "hardwareId"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "benchmarks",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "coefficientOfVariation"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "benchmark",
+                  "operator": "=~",
+                  "value": "/^$benchmark$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "branch",
+                  "operator": "=~",
+                  "value": "/^$branch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "hardwareId",
+                  "operator": "=~",
+                  "value": "/^$hardwareId$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
@@ -203,7 +278,7 @@
               "show": true
             },
             {
-              "format": "short",
+              "format": "percentunit",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -319,5 +394,5 @@
   },
   "timezone": "browser",
   "title": "QmlBench Branches",
-  "version": 15
+  "version": 22
 }

@@ -100,13 +100,21 @@
           "renderer": "flot",
           "repeat": "benchmark",
           "seriesOverride": [],
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "/CoV.+/",
+              "fill": 0,
+              "stack": false,
+              "yaxis": 2,
+              "zindex": 3
+            }
+          ],
           "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$tag_branch $tag_hardwareId",
+              "alias": "Result ($tag_branch $tag_hardwareId)",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -137,7 +145,7 @@
               "hide": false,
               "measurement": "benchmarks",
               "policy": "default",
-              "query": "SELECT mean(\"mean\") FROM \"benchmarks\" WHERE $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT mean(\"mean\") FROM \"benchmarks\" WHERE \"benchmark\" =~ /^$benchmark$/ AND \"branch\" =~ /^$branch$/ AND \"hardwareId\" =~ /^$hardwareId$/ AND $timeFilter GROUP BY time($interval), \"branch\", \"hardwareId\" fill(none)",
               "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
@@ -146,6 +154,73 @@
                   {
                     "params": [
                       "mean"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "benchmark",
+                  "operator": "=~",
+                  "value": "/^$benchmark$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "branch",
+                  "operator": "=~",
+                  "value": "/^$branch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "hardwareId",
+                  "operator": "=~",
+                  "value": "/^$hardwareId$/"
+                }
+              ]
+            },
+            {
+              "alias": "CoV ($tag_branch $tag_hardwareId)",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "branch"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "hardwareId"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "benchmarks",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "coefficientOfVariation"
                     ],
                     "type": "field"
                   },
@@ -202,7 +277,7 @@
               "show": true
             },
             {
-              "format": "short",
+              "format": "percentunit",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -318,5 +393,5 @@
   },
   "timezone": "browser",
   "title": "QmlBench Hardware",
-  "version": 16
+  "version": 20
 }
