@@ -13,7 +13,7 @@ HOSTNAME = "10.213.255.45:8086"
 def submit_output(output, branch, hardwareId):
     tree = json.loads(output)
     for key in tree:
-        if key.endswith(".qml"):
+        if key.endswith(".qml") and "average" in tree[key]:
             mean = tree[key]["average"]
             standardDeviation = tree[key]["standard-deviation-all-samples"]
             coefficientOfVariation = standardDeviation / mean if mean > 0.0 else 0.0
