@@ -30,6 +30,12 @@
     },
     {
       "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
       "id": "text",
       "name": "Text",
       "version": ""
@@ -293,6 +299,150 @@
       "showTitle": false,
       "title": "A Row",
       "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 250,
+      "panels": [
+        {
+          "columns": [
+            {
+              "text": "Avg",
+              "value": "avg"
+            },
+            {
+              "text": "Max",
+              "value": "max"
+            },
+            {
+              "text": "Min",
+              "value": "min"
+            },
+            {
+              "text": "Current",
+              "value": "current"
+            }
+          ],
+          "fontSize": "100%",
+          "id": 116,
+          "links": [],
+          "pageSize": null,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 4,
+            "desc": true
+          },
+          "span": 12,
+          "styles": [
+            {
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "date"
+            },
+            {
+              "colorMode": "cell",
+              "colors": [
+                "rgba(50, 172, 45, 0.97)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(245, 54, 54, 0.9)"
+              ],
+              "decimals": 2,
+              "pattern": "/.*/",
+              "thresholds": [
+                "0.03",
+                "0.05"
+              ],
+              "type": "number",
+              "unit": "percentunit"
+            }
+          ],
+          "targets": [
+            {
+              "alias": "$tag_benchmark ($tag_hardwareId @ $tag_branch)",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "benchmark"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "hardwareId"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "branch"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "benchmarks",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "coefficientOfVariation"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "benchmark",
+                  "operator": "=~",
+                  "value": "/^$benchmark$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "branch",
+                  "operator": "=~",
+                  "value": "/^$branch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "hardwareId",
+                  "operator": "=~",
+                  "value": "/^$hardwareId$/"
+                }
+              ]
+            }
+          ],
+          "title": "Coefficient of variation summary",
+          "transform": "timeseries_aggregations",
+          "type": "table"
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
     }
   ],
   "schemaVersion": 14,
@@ -393,5 +543,5 @@
   },
   "timezone": "browser",
   "title": "QmlBench Hardware",
-  "version": 23
+  "version": 25
 }
