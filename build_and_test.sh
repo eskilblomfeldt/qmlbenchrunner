@@ -60,12 +60,12 @@ make -j8
 cd ..
 qmlbenchrunner/run.py results.json $1 $2
 
-compareSha1sAndAnnotate $1 qtbase
-compareSha1sAndAnnotate $1 qtdeclarative
-compareSha1sAndAnnotate $1 qtquickcontrols
-compareSha1sAndAnnotate $1 qtquickcontrols2
-compareSha1sAndAnnotate $1 qtgraphicaleffects
-compareSha1sAndAnnotate master qmlbench
+compareSha1sAndAnnotate qtbase $1
+compareSha1sAndAnnotate qtdeclarative $1
+compareSha1sAndAnnotate qtquickcontrols $1
+compareSha1sAndAnnotate qtquickcontrols2 $1
+compareSha1sAndAnnotate qtgraphicaleffects $1
+compareSha1sAndAnnotate qmlbench master
 
 rm -rf qtbase
 rm -rf qtdeclarative
