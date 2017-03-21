@@ -278,9 +278,9 @@
             },
             {
               "format": "percentunit",
-              "label": null,
+              "label": "",
               "logBase": 1,
-              "max": null,
+              "max": "0.1",
               "min": null,
               "show": true
             }
@@ -393,5 +393,5 @@
   },
   "timezone": "browser",
   "title": "QmlBench Hardware",
-  "version": 20
+  "version": 23
 }

@@ -279,10 +279,10 @@
             },
             {
               "format": "percentunit",
-              "label": null,
+              "label": "",
               "logBase": 1,
-              "max": null,
-              "min": null,
+              "max": "0.1",
+              "min": "0",
               "show": true
             }
           ]
@@ -394,5 +394,5 @@
   },
   "timezone": "browser",
   "title": "QmlBench Branches",
-  "version": 22
+  "version": 24
 }

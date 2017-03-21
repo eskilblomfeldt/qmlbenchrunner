@@ -13,10 +13,23 @@ HOSTNAME = "10.213.255.45:8086"
 def submit_output(output, branch, hardwareId):
     tree = json.loads(output)
     for key in tree:
-        if key.endswith(".qml") and "average" in tree[key]:
-            mean = tree[key]["average"]
-            standardDeviation = tree[key]["standard-deviation-all-samples"]
-            coefficientOfVariation = standardDeviation / mean if mean > 0.0 else 0.0
+        if key.endswith(".qml"):
+            mean = 0
+            standardDeviation = 0
+            coefficientOfVariation = 0
+
+            try:
+                mean = tree[key]["average"]
+                standardDeviation = tree[key]["standard-deviation-all-samples"]
+                coefficientOfVariation = tree[key]["coefficient-of-variation"]
+            except:
+                # probably means that the test didn't run properly.
+                # (empty object). record it anyway, so it shows up,
+                # and catch the exception so that other test results
+                # are recorded.
+                print("Test %s was malformed (empty run?)" % key)
+                pass
+
             basename = key.split("/")[-1]
             tags = ('branch=' + branch, 'benchmark=' + basename, 'hardwareId=' + hardwareId)
             fields = ('mean=' + str(mean),
@@ -29,6 +42,7 @@ def submit_output(output, branch, hardwareId):
             print(result)
 
 def run_benchmark(filename, branch, hardwareId):
+    print("Loading %s" % filename)
     output = subprocess.check_output(["cat", filename])
     submit_output(output.decode("utf-8"), branch, hardwareId)
 
