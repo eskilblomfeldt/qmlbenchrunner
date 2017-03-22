@@ -25,8 +25,8 @@ function buildQtModule {
 # compareSha1sAndAnnotate <module name> <branch>
 function compareSha1sAndAnnotate {
     if [[ -e ../$1_$2_sha1.txt && -e $1_$2_sha1.txt ]]; then
-	local new_sha1 = `cat $1_$2_sha1.txt`
-	local old_sha1 = `cat ../$1_$2_sha1.txt`
+	local new_sha1=$(cat $1_$2_sha1.txt)
+	local old_sha1=$(cat ../$1_$2_sha1.txt)
 	if [[ "$new_sha1" != "$old_sha1" ]]; then
 	    annotate.py --title="$1 update" --tag="$1Update" --text="Updated $1 to $new_sha1" --branch="$2"
 	fi
