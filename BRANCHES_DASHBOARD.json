@@ -110,10 +110,13 @@
           "seriesOverrides": [
             {
               "alias": "/CoV.+/",
-              "fill": 0,
               "stack": false,
               "yaxis": 2,
               "zindex": 3
+            },
+            {
+              "alias": "/Result.+/",
+              "fill": 0
             }
           ],
           "span": 6,
