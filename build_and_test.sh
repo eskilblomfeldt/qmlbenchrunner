@@ -28,7 +28,7 @@ function compareSha1sAndAnnotate {
 	local new_sha1=$(cat $1_$2_sha1.txt)
 	local old_sha1=$(cat ../$1_$2_sha1.txt)
 	if [[ "$new_sha1" != "$old_sha1" ]]; then
-	    qmlbenchrunner/annotate.py --title="$1 update" --tag="$1Update" --text="Updated $1 to $new_sha1" --branch="$2"
+	    qmlbenchrunner/annotate.py --title="$1 update" --tag="$1Update" --text="Updated $1 to $new_sha1 (previous was $old_sha1)" --branch="$2"
 	fi
     fi
 
