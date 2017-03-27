@@ -304,6 +304,119 @@
       "title": "A Row",
       "titleSize": "h6"
     },
+	{
+      "collapse": false,
+      "height": 250,
+      "panels": [
+        {
+          "columns": [],
+          "datasource": "qmlbench",
+          "fontSize": "100%",
+          "id": 67,
+          "interval": "",
+          "links": [],
+          "pageSize": null,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 4,
+            "desc": true
+          },
+          "span": 12,
+          "styles": [
+            {
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "date"
+            },
+            {
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "number",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "hardwareId"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "branch"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "benchmark"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "benchmarks",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "mean"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "median"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "benchmark",
+                  "operator": "=~",
+                  "value": "/^$benchmark$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "branch",
+                  "operator": "=~",
+                  "value": "/^$branch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "hardwareId",
+                  "operator": "=~",
+                  "value": "/^$hardwareId$/"
+                }
+              ]
+            }
+          ],
+          "title": "Median in current interval",
+          "transform": "table",
+          "type": "table"
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
     {
       "collapse": false,
       "height": 250,
@@ -514,6 +627,7 @@
         "type": "query",
         "useTags": false
       }
+	  
     ]
   },
   "time": {
