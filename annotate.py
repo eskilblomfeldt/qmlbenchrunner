@@ -6,8 +6,9 @@ import logging
 import requests
 import json
 
-HOSTNAME = "10.213.255.45:8086"
+#HOSTNAME = "10.213.255.45:8086"
 #HOSTNAME = "localhost:8086"
+HOSTNAME = "testresults.qt.io:443/influxdb"
 
 def post_annotation(title, text, tag, branch):
     # TODO: we could consider splitting tag on , and inserting multiple annotations
@@ -20,7 +21,10 @@ def post_annotation(title, text, tag, branch):
               'branch=\"%s\"' % branch,
               )
     data = 'annotations %s' % (','.join(fields))
-    result = requests.post("http://%s/write?db=qmlbench" % HOSTNAME, data=data.encode('utf-8'))
+    result = requests.post("https://%s/write?db=qmlbench" % HOSTNAME,
+                           auth=requests.auth.HTTPBasicAuth(os.environ["INFLUXDBUSER"], os.environ["INFLUXDBPASSWORD"]),
+                           data=data.encode('utf-8'))
+
     print(data)
     print(result)
 
