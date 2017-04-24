@@ -13,12 +13,12 @@ function checkoutQtModule {
     cd ..
 }
 
-# buildQtModule <module name> <branch>
+# buildQtModule <module name> <branch> <jobs>
 function buildQtModule {
     checkoutQtModule $1 $2
     cd $1
     ../qtbase/bin/qmake
-    make -j8
+    make -j$3
     cd ..    
 }
 
@@ -41,14 +41,14 @@ function compareSha1sAndAnnotate {
 checkoutQtModule qtbase $1
 cd qtbase
 ./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license
-make -j8
+make -j$3
 cd ..
 
 # other modules
-buildQtModule qtdeclarative $1
-buildQtModule qtquickcontrols $1
-buildQtModule qtquickcontrols2 $1
-buildQtModule qtgraphicaleffects $1
+buildQtModule qtdeclarative $1 $3
+buildQtModule qtquickcontrols $1 $3
+buildQtModule qtquickcontrols2 $1 $3
+buildQtModule qtgraphicaleffects $1 $3
 
 # qmlbench
 git clone https://code.qt.io/qt-labs/qmlbench.git
@@ -60,12 +60,14 @@ make -j8
 cd ..
 qmlbenchrunner/run.py results.json $1 $2
 
-compareSha1sAndAnnotate qtbase $1
-compareSha1sAndAnnotate qtdeclarative $1
-compareSha1sAndAnnotate qtquickcontrols $1
-compareSha1sAndAnnotate qtquickcontrols2 $1
-compareSha1sAndAnnotate qtgraphicaleffects $1
-compareSha1sAndAnnotate qmlbench master
+if [ "$4" == "annotate" ]; then
+    compareSha1sAndAnnotate qtbase $1
+    compareSha1sAndAnnotate qtdeclarative $1
+    compareSha1sAndAnnotate qtquickcontrols $1
+    compareSha1sAndAnnotate qtquickcontrols2 $1
+    compareSha1sAndAnnotate qtgraphicaleffects $1
+    compareSha1sAndAnnotate qmlbench master
+fi
 
 rm -rf qtbase
 rm -rf qtdeclarative
