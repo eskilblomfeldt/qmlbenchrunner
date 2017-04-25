@@ -6,7 +6,7 @@
 
 # checkoutQtModule <module name> <branch>
 function checkoutQtModule {
-    git clone https://code.qt.io/qt/$1
+    git clone --progress https://code.qt.io/qt/$1
     cd $1
     git checkout $2
     git rev-parse HEAD > ../$1_$2_sha1.txt
@@ -51,7 +51,7 @@ buildQtModule qtquickcontrols2 $1 $3
 buildQtModule qtgraphicaleffects $1 $3
 
 # qmlbench
-git clone https://code.qt.io/qt-labs/qmlbench.git
+git clone --progress https://code.qt.io/qt-labs/qmlbench.git
 cd qmlbench
 git rev-parse HEAD > ../qmlbench_master_sha1.txt
 ../qtbase/bin/qmake
