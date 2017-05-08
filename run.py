@@ -19,6 +19,15 @@ def submit_output(output, branch, hardwareId):
             standardDeviation = 0
             coefficientOfVariation = 0
 
+            # key is foo/bar/benchmarks/auto/<important_thing_here>/stuff.qml
+            # dirname will trim off the last part, leaving us
+            # foo/bar/benchmarks/auto/<important_thing_here>
+            benchmarkSuite = os.path.dirname(key)
+
+            # now cut off everything before <important_thing_here>.
+            cutPos = benchmarkSuite.find("/benchmarks/auto/")
+            benchmarkSuite = benchmarkSuite[cutPos + len("/benchmarks/auto/"):]
+
             try:
                 mean = tree[key]["average"]
                 standardDeviation = tree[key]["standard-deviation-all-samples"]
@@ -32,7 +41,7 @@ def submit_output(output, branch, hardwareId):
                 pass
 
             basename = key.split("/")[-1]
-            tags = ('branch=' + branch, 'benchmark=' + basename, 'hardwareId=' + hardwareId)
+            tags = ('branch=' + branch, 'benchmark=' + basename, 'hardwareId=' + hardwareId, 'suite=' + benchmarkSuite)
             fields = ('mean=' + str(mean),
                       'coefficientOfVariation=' + str(coefficientOfVariation),
                       )
