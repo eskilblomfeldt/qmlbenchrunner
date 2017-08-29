@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # XAUTHORITY must be set and DISPLAY must be set
-# Usage: build_and_test.sh <main branch> <hardwareId> <jobs> [qtdeclarative-branch]
+# Usage: build_and_test.sh <main branch> <hardwareId> <jobs> ["annotate"?] [qtdeclarative-branch]
 # XAUTHORITY must be accessible
 
 # checkoutQtModule <module name> <branch>
@@ -37,8 +37,8 @@ function compareSha1sAndAnnotate {
     fi
 }
 
-branch_label="$1+$4"
-qtdeclarative_branch=$4
+branch_label="$1+$5"
+qtdeclarative_branch=$5
 if [[ -z $qtdeclarative_branch ]]; then
     qtdeclarative_branch=$1
     branch_label=$1
