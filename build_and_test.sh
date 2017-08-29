@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # XAUTHORITY must be set and DISPLAY must be set
-# Usage: build_and_test.sh <branch> <hardwareId>
+# Usage: build_and_test.sh <main branch> <hardwareId> <jobs> [qtdeclarative-branch]
 # XAUTHORITY must be accessible
 
 # checkoutQtModule <module name> <branch>
@@ -37,6 +37,15 @@ function compareSha1sAndAnnotate {
     fi
 }
 
+branch_label="$1+$4"
+qtdeclarative_branch=$4
+if [[ -z $qtdeclarative_branch ]]; then
+    qtdeclarative_branch=$1
+    branch_label=$1
+fi
+
+echo "Using $1 as base and $qtdeclarative_branch for qtdeclarative. Using $branch_label as label in database."
+
 # checkout and configure Qt Base
 checkoutQtModule qtbase $1
 cd qtbase
@@ -45,7 +54,7 @@ make -j$3
 cd ..
 
 # other modules
-buildQtModule qtdeclarative $1 $3
+buildQtModule qtdeclarative $qtdeclarative_branch $3
 buildQtModule qtquickcontrols $1 $3
 buildQtModule qtquickcontrols2 $1 $3
 buildQtModule qtgraphicaleffects $1 $3
@@ -58,7 +67,8 @@ git rev-parse HEAD > ../qmlbench_master_sha1.txt
 make -j8
 ./src/qmlbench --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations > ../results.json
 cd ..
-qmlbenchrunner/run.py results.json $1 $2
+echo Label: $branch_label
+qmlbenchrunner/run.py results.json $branch_label $2
 
 if [ "$4" == "annotate" ]; then
     compareSha1sAndAnnotate qtbase $1
