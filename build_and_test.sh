@@ -49,7 +49,7 @@ echo "Using $1 as base and $qtdeclarative_branch for qtdeclarative. Using $branc
 # checkout and configure Qt Base
 checkoutQtModule qtbase $1
 cd qtbase
-./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license
+./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors
 make -j$3
 cd ..
 
