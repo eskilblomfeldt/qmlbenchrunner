@@ -6,6 +6,7 @@ import subprocess
 import logging
 import requests
 import json
+import platform
 
 #HOSTNAME = "10.213.255.45:8086"
 #HOSTNAME = "localhost:8086"
@@ -55,7 +56,11 @@ def submit_output(output, branch, hardwareId):
 
 def run_benchmark(filename, branch, hardwareId):
     print("Loading %s" % filename)
-    output = subprocess.check_output(["cat", filename])
+    if (platform.system() == 'Windows'):
+        output = subprocess.check_output(["Powershell.exe", "type", filename])
+    else:
+        output = subprocess.check_output(["cat", filename])
+    #output = subprocess.check_output(["cat", filename])
     submit_output(output.decode("utf-8"), branch, hardwareId)
 
 if __name__ == "__main__":
