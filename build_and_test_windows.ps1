@@ -27,16 +27,16 @@ function buildQtModule([string]$module, [string]$version, [int]$BuildCores) {
 }
 
 function compareSha1sAndAnnotate([string]$module, [string]$version) {
-    if (Get-Content ([string]::Format("../{0}_{1}_sha1.txt",$module,$version)) -eq Get-Content ([string]::Format("{0}_{1}_sha1.txt",$module,$version))){
-	Set-Variable -Name "new_sha1" -Value Get-Content ([string]::Format("{0}_{1}_sha1.txt",$module,$version))
-	Set-Variable -Name "old_sha1" -Value Get-Content ([string]::Format("../{0}_{1}_sha1.txt",$module,$version))
+    if ((Get-Content ([string]::Format("../{0}_{1}_sha1.txt",$module,$version))) -eq (Get-Content ([string]::Format("{0}_{1}_sha1.txt",$module,$version)))){
+	Set-Variable -Name "new_sha1" -Value (Get-Content ([string]::Format("{0}_{1}_sha1.txt",$module,$version)))
+	Set-Variable -Name "old_sha1" -Value (Get-Content ([string]::Format("../{0}_{1}_sha1.txt",$module,$version)))
 	
 	if ($new_sha1 -ne $old_sha1){
 	    python qmlbenchrunner/annotate.py --title="$module update" --tag="$moduleUpdate" --text="Updated $module to $new_sha1 (previous was $old_sha1)" --branch="$version"
 	}
 	}
 
-    if (Get-Content ([string]::Format("../{0}_{1}_sha1.txt",$module,$version))){
+    if ((Get-Content ([string]::Format("{0}_{1}_sha1.txt",$module,$version)))){
 	cp ([string]::Format("{0}_{1}_sha1.txt",$module,$version)) ([string]::Format("../{0}_{1}_sha1.txt",$module,$version))
     }
 }
@@ -70,7 +70,12 @@ Write-Host "`nVisual Studio 2017 Command Prompt variables set." -ForegroundColor
 # checkout and configure Qt Base
 checkoutQtModule qtbase $QtVersion
 cd qtbase
-./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors
+if ($QtVersion == "5.6"){
+	./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors -opengl desktop
+}
+else{
+	./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors
+}
 #nmake
 ../qmlbenchrunner/JOM/jom.exe -j $BuildCores
 cd ..
