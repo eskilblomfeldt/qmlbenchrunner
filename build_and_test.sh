@@ -49,7 +49,12 @@ echo "Using $1 as base and $qtdeclarative_branch for qtdeclarative. Using $branc
 # checkout and configure Qt Base
 checkoutQtModule qtbase $1
 cd qtbase
-./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors
+if [["$1" == "5.6"]]; then
+echo "Configuring with qt-xcb libraries because 5.6 requires this dependency and we\'re not sure it\'s installed on this system."
+	./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors -qt-xcb
+else
+	./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors
+fi
 make -j$3
 cd ..
 
