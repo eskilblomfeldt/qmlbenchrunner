@@ -1,6 +1,6 @@
-############################################
 QMLBenchrunner
-############################################
+==============
+
 Developed by Eskil Blomfeldt
 Adapted for Windows by Daniel Smith
 
@@ -8,9 +8,10 @@ QMLBenchrunner is a simple script and python application to programmatically
 clone a Qt Git repository, run associated QML Benchmark tests, and post
 results to the qt testresults timeseries database.
 
-##############
+
 Prerequisites
-##############
+-----------------
+
 
 - Python3
 	Python3 module dependencies:
@@ -27,9 +28,9 @@ Windows-specific Prerequsites:
 		section below.
 	- JOM - A version is included with qmlbenchrunner. If a new version is required, it can be found at https://wiki.qt.io/Jom
 
-##########
+
 Usage
-##########
+--------
 
 QMLBenchrunner will clone copies of required Qt Git repositories as well as qmlbench into the working directory.
 Is is best practice to run qmlbenchrunner from a parent directory so that the cloned repos are not cloned into the
