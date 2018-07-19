@@ -18,15 +18,15 @@ Prerequisites
 		- requests
 
 Windows-specific Prerequsites:
-	- An MSVC2015+ 32-bit Prebuilt Components installation of Qt 5.10.0 or later. (Earlier versions have not been tested)
-	- ActivePerl - Download and install from http://www.activestate.com/Products/activeperl/index.mhtml
-	- GPerf - Download and install from http://gnuwin32.sourceforge.net/downlinks/gperf.php
-	- Flex & Bison for windows - Included with qmlbenchrunner, or downloadable from 
-		http://sourceforge.net/projects/winflexbison/files/win_flex_bison-2.5.5.zip/download
-		If Win Flex-Bison is downloaded, you must rename the executables to "flex.exe" and "bison.exe"
-		and specify the location of your flex-bison executables using the powershell parameter specified in the paramters
-		section below.
-	- JOM - A version is included with qmlbenchrunner. If a new version is required, it can be found at https://wiki.qt.io/Jom
+* An MSVC2015+ 32-bit Prebuilt Components installation of Qt 5.10.0 or later. (Earlier versions have not been tested)
+* ActivePerl - Download and install from http://www.activestate.com/Products/activeperl/index.mhtml
+* GPerf - Download and install from http://gnuwin32.sourceforge.net/downlinks/gperf.php
+* Flex & Bison for windows - Included with qmlbenchrunner, or downloadable from 
+&nbsphttp://sourceforge.net/projects/winflexbison/files/win_flex_bison-2.5.5.zip/download
+&nbspIf Win Flex-Bison is downloaded, you must rename the executables to "flex.exe" and "bison.exe"
+&nbspand specify the location of your flex-bison executables using the powershell parameter specified in the paramters
+&nbspsection below.
+* JOM - A version is included with qmlbenchrunner. If a new version is required, it can be found at https://wiki.qt.io/Jom
 
 
 Usage
@@ -39,7 +39,7 @@ qmlbenchrunner directory directly. See the examples below.
 Always set environment variables INFLUXDBUSER and INFLUXDBPASSWORD in the console before calling the build_and_test
 script. Results will still be saved to disk in "results.json" even if unable to write to the database.
 
-Linux:
+###Linux:###
 	Some machines may require XAUTHORITY to be specified. If problems are encountered, set XAUTHORITY and DISPLAY in
 	the console before running this script.
 
@@ -55,7 +55,7 @@ Linux:
 	export DISPLAY=:0
 	qmlbenchrunner/build_and_test.sh 5.6 $NODE_NAME 8 annotate
 
-Windows:
+###Windows:###
 	Qmlbenchrunner should be executed from Powershell for best compatibility. Because QMLBench is a graphical application, if
 	qmlbenchrunner is being executed via a jenkins slave, the slave must use the java web start method. Running jenkins as a
 	Windows service will not display QMLBench on the real user desktop.
@@ -74,7 +74,7 @@ Windows:
 		$env:INFLUXDBPASSWORD=dbuser1password
 		.\qmlbenchrunner\build_and_test_windows.ps1 -QtVersion 5.11 -BuildCores 7 -MachineName $ENV:NODE_NAME -WinDeployDir C:\Qt\msvc2015\bin -FlexBisonDir C:\flex_bison -Annotate
 
-MacOS X:
+###MacOS X:###
 	See instructions for Linux. Some trouble has been observed with Jenkins OSX clients not setting PATH correctly. If you experience 
 	issues when submitting results to a database, make sure that Python3 is set in the PATH environment variable used by Jenkins scripts.
 

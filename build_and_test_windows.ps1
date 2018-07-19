@@ -94,7 +94,7 @@ git rev-parse HEAD > ../qmlbench_master_sha1.txt
 #nmake
 ../qmlbenchrunner/JOM/jom.exe -j8
 windeployqt.exe --qmldir .\benchmarks .\src\release\qmlbench.exe
-src/release/qmlbench.exe --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations > ../results.json
+src/release/qmlbench.exe --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings > ../results.json
 cd ..
 echo Label: $branch_label
 python qmlbenchrunner/run.py results.json $branch_label $MachineName

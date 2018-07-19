@@ -72,7 +72,7 @@ cd qmlbench
 git rev-parse HEAD > ../qmlbench_master_sha1.txt
 ../qtbase/bin/qmake
 make -j8
-./src/qmlbench --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations > ../results.json
+./src/qmlbench --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings > ../results.json
 cd ..
 echo Label: $branch_label
 qmlbenchrunner/run.py results.json $branch_label $2
