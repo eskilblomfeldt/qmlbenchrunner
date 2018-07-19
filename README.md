@@ -39,7 +39,7 @@ qmlbenchrunner directory directly. See the examples below.
 Always set environment variables INFLUXDBUSER and INFLUXDBPASSWORD in the console before calling the build_and_test
 script. Results will still be saved to disk in "results.json" even if unable to write to the database.
 
-###Linux:###
+### Linux: ###
 	Some machines may require XAUTHORITY to be specified. If problems are encountered, set XAUTHORITY and DISPLAY in
 	the console before running this script.
 
@@ -55,7 +55,7 @@ script. Results will still be saved to disk in "results.json" even if unable to 
 	export DISPLAY=:0
 	qmlbenchrunner/build_and_test.sh 5.6 $NODE_NAME 8 annotate
 
-###Windows:###
+### Windows: ###
 	Qmlbenchrunner should be executed from Powershell for best compatibility. Because QMLBench is a graphical application, if
 	qmlbenchrunner is being executed via a jenkins slave, the slave must use the java web start method. Running jenkins as a
 	Windows service will not display QMLBench on the real user desktop.
@@ -74,7 +74,7 @@ script. Results will still be saved to disk in "results.json" even if unable to 
 		$env:INFLUXDBPASSWORD=dbuser1password
 		.\qmlbenchrunner\build_and_test_windows.ps1 -QtVersion 5.11 -BuildCores 7 -MachineName $ENV:NODE_NAME -WinDeployDir C:\Qt\msvc2015\bin -FlexBisonDir C:\flex_bison -Annotate
 
-###MacOS X:###
+### MacOS X: ###
 	See instructions for Linux. Some trouble has been observed with Jenkins OSX clients not setting PATH correctly. If you experience 
 	issues when submitting results to a database, make sure that Python3 is set in the PATH environment variable used by Jenkins scripts.
 
