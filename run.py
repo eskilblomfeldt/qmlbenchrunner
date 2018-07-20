@@ -56,10 +56,7 @@ def submit_output(output, branch, hardwareId):
 
 def run_benchmark(filename, branch, hardwareId):
     print("Loading %s" % filename)
-    if (platform.system() == 'Windows'):
-        output = subprocess.check_output(["Powershell.exe", "type", filename])
-    else:
-        output = subprocess.check_output(["cat", filename])
+    output = subprocess.check_output(["type" if platform.system() == 'Windows' else "cat", filename])
     #output = subprocess.check_output(["cat", filename])
     submit_output(output.decode("utf-8"), branch, hardwareId)
 
