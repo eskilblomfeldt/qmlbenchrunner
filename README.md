@@ -10,7 +10,7 @@ results to the qt testresults timeseries database.
 
 
 Prerequisites
------------------
+-------------
 
 
 - Python3
@@ -30,7 +30,7 @@ Windows-specific Prerequsites:
 
 
 Usage
---------
+-----
 
 QMLBenchrunner will clone copies of required Qt Git repositories as well as qmlbench into the working directory.
 Is is best practice to run qmlbenchrunner from a parent directory so that the cloned repos are not cloned into the
@@ -81,3 +81,44 @@ script. Results will still be saved to disk in "results.json" even if unable to 
 	Example:
 	export PATH+=:/Library/Frameworks/Python.framework/Versions/3.6/bin/
 	qmlbenchrunner/build_and_test.sh dev $NODE_NAME 4 annotate
+
+### Embedded ###
+	The build_and_test_embedded.sh script is inteded to be used with a Jenkins host, but can be used on it's own. The script file will need to be modifed based on your specific environment as detailed below.
+	
+	Terminology for this section:
+		Host - The machine this script will run on.
+		Client - The target embedded device that will execute QMLBench.
+
+	Assumptions:
+	1) The host is configured for cross-compilation to a given target device.
+	2) An official Boot2Qt SDK is installed on the host.
+	3) The target embedded device (client) is accessible via SSH over a local network by IP and the host has connected to it at least once.
+	4) The host is accessible via ssh over a local network by IP and the host's ssh configuration is configured to accept connections from the client.
+
+	Required script alterations:
+	1) Update the sysrootDir with your Boot2Qt version number. (line 16)
+	2) Update the user and IP of the host in order to pass the results.json file back from the client. (line 128)
+
+	Required host configuration:
+	1) Before running the script, the following environment variables must be set.
+
+	DEVMKSPEC=linux-imx6-g++
+	DEVNAME=apalis-imx6
+	CROSSCOMPILE=x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-
+	ARMSYSROOT=cortexa9hf-neon-poky-linux-gnueabi
+	DEVIP=10.9.70.70
+	INFLUXDBUSER=username #Set if writing to a database.
+	INFLUXDBPASSWORD=password #Set if writing to a database.
+
+	Running the script:
+	### build_and_test_embedded.sh arguments are strictly positional. Do not skip arguments that are required. ###
+
+	Args:	QtVersion (required) | MachineName (required) | BuildCores (required) |
+			Annotate (required, set to "False" if not desired) | QtDeclaritiveVersion (optional, leave missing if same as main QtVersion)
+	
+	qmlbenchrunner/build_and_test_embedded.sh 5.6 $NODE_NAME 8 annotate
+
+
+	Required client configuration:
+	1) Verify that at least 1GB of free space exists on the client.
+	NB! This script will wipe out /opt/qt on the client if there is insufficient space on the device. Verify that this directory does not contain anything you want to keep.
