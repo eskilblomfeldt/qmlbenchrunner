@@ -67,7 +67,6 @@ echo "Using $1 as base and $qtdeclarative_branch for qtdeclarative. Using $branc
 checkoutQtModule qtbase $1
 cd $qtBuildDir
 $qtSourceDir/qtbase/configure -commercial -confirm-license -debug -prefix $devicePrefix -hostprefix $qtHostPrefix -extprefix $installRoot -device $deviceMkspec -device-option CROSS_COMPILE=$crossCompile -sysroot $armSysrootDir -nomake tests -nomake examples -device-option DISTRO_OPTS=boot2qt $EXTRAARGS
-	#./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors 
 make -j $3
 make install
 cd $WORKSPACE/$BUILD_NUMBER
@@ -81,7 +80,11 @@ buildQtModule qtgraphicaleffects $1 $3
 # qmlbench
 git clone --progress https://code.qt.io/qt-labs/qmlbench.git
 cd qmlbench
-rm -rf benchmarks/auto/creation/qtgraphicaleffects
+#Remove any bad tests that are too difficult for low-power hardware if the variable is set.
+if [ -z "$BADTESTS" ]; then
+    rm -rf $BADTESTS
+fi  
+
 git rev-parse HEAD > ../qmlbench_master_sha1.txt
 $qtHostPrefix/bin/qmake qmlbench.pro
 make -j $3
@@ -122,8 +125,7 @@ echo "Beginning SSH session to device for local QMLBench run..."
 ssh -o UserKnownHostsFile=/home/dan/.ssh/known_hosts root@$deviceIP /bin/bash << 'EOT'
 export QT_EGLFS_IMX6_NO_FB_MULTI_BUFFER=1
 cd /opt/qt/
-#./qmlbench --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings > results.json
-./qmlbench --json --shell frame-count benchmarks/auto/creation/qml.modelaccess/modelaccess_bytearray.qml > results.json
+./qmlbench --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings > results.json
 hostfilepath=$(cat hostfilepath.txt)
 rsync -avz -e "ssh -i /home/root/.ssh/id_rsa" results.json dan@10.9.70.25:$hostfilepath
 exit

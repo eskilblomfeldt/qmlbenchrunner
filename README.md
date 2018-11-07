@@ -107,8 +107,11 @@ script. Results will still be saved to disk in "results.json" even if unable to 
 	CROSSCOMPILE=x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-
 	ARMSYSROOT=cortexa9hf-neon-poky-linux-gnueabi
 	DEVIP=10.9.70.70
+
+	Optional environment variables:
 	INFLUXDBUSER=username #Set if writing to a database.
 	INFLUXDBPASSWORD=password #Set if writing to a database.
+	BADTESTS=/path/to/bad/test #Specify a space-separated list of known bad tests or directories that are too difficult for the client to complete.
 
 	Running the script:
 	### build_and_test_embedded.sh arguments are strictly positional. Do not skip arguments that are required. ###
