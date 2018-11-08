@@ -81,7 +81,8 @@ buildQtModule qtgraphicaleffects $1 $3
 git clone --progress https://code.qt.io/qt-labs/qmlbench.git
 cd qmlbench
 #Remove any bad tests that are too difficult for low-power hardware if the variable is set.
-if [ -z "$BADTESTS" ]; then
+if [ ! -z "$BADTESTS" ]; then
+    echo "deleting bad tests: $BADTESTS"
     rm -rf $BADTESTS
 fi  
 
@@ -113,7 +114,7 @@ else
     bytesFree=$(ssh -o UserKnownHostsFile=/home/dan/.ssh/known_hosts root@10.9.70.70 df / | awk '/[0-9]%/{print $(NF-2)}')
     echo "$bytesFree bytes free on device after deletion."
     if [[ sizeNeeded -lt bytesFree ]]; then
-        rsync -avz --exclude=doc --exclude=include --exclude=*.debug $installRoot* root@$deviceIP:/opt/qt/
+        rsync -avz --exclude=doc --exclude=include --exclude=*.debug $installRoot/* root@$deviceIP:/opt/qt/
         echo "$bytesFree bytes remaining on device."
     else
         echo "Not enough disk space on device to continue, and wiping out /opt/qt wasn't enough for some reason. Please investigate the device @ [IP]"
