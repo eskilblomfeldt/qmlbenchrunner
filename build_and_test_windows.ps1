@@ -87,9 +87,14 @@ cd qmlbench
 git rev-parse HEAD > ../qmlbench_master_sha1.txt
 ../qtbase/bin/qmake
 #nmake
-../qmlbenchrunner/JOM/jom.exe -j8
+../qmlbenchrunner/JOM/jom.exe -j $BuildCores
 windeployqt.exe --qmldir .\benchmarks .\src\release\qmlbench.exe
-src/release/qmlbench.exe --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings/ > ../results.json
+
+if (Test-Path env:BADTESTS){
+	Remove-Item $env:BADTESTS -Recurse -Force
+}
+
+src/release/qmlbench.exe --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings> ../results.json
 cd ..
 echo Label: $branch_label
 python qmlbenchrunner/run.py results.json $branch_label $MachineName
