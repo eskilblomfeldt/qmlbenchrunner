@@ -70,6 +70,10 @@ buildQtModule qtgraphicaleffects $1 $3
 git clone --progress https://code.qt.io/qt-labs/qmlbench.git
 cd qmlbench
 git rev-parse HEAD > ../qmlbench_master_sha1.txt
+if [ ! -z "$BADTESTS" ]; then
+    echo "deleting bad tests: $BADTESTS"
+    rm -rf $BADTESTS
+fi
 ../qtbase/bin/qmake
 make -j8
 ./src/qmlbench --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings > ../results.json
