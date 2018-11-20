@@ -94,7 +94,7 @@ if (Test-Path env:BADTESTS){
 	Remove-Item $env:BADTESTS -Recurse -Force
 }
 
-src/release/qmlbench.exe --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings> ../results.json
+src/release/qmlbench.exe --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings > ../results.json
 cd ..
 echo Label: $branch_label
 python qmlbenchrunner/run.py results.json $branch_label $MachineName
