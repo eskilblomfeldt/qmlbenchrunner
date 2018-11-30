@@ -6,7 +6,7 @@
 
 # checkoutQtModule <module name> <branch>
 
-qtSdkDir=/home/dan/Qt
+qtSdkDir=/home/$USER/Qt
 qtSourceDir=$WORKSPACE/$BUILD_NUMBER
 qtBuildDir=$WORKSPACE/$BUILD_NUMBER/build
 qtHostPrefix=$qtBuildDir/hostbin
@@ -99,6 +99,9 @@ echo Label: $branch_label
 sizeNeeded=$(du -hsk $installRoot | cut -f 1)
 bytesFree=$(ssh -o UserKnownHostsFile=/home/dan/.ssh/known_hosts root@$deviceIP df / | awk '/[0-9]%/{print $(NF-2)}')
 echo "$WORKSPACE/$BUILD_NUMBER/" > $installRoot/hostfilepath.txt
+
+#Delete tests from device
+ssh -o UserKnownHostsFile=/home/dan/.ssh/known_hosts root@$deviceIP rm -rf /opt/qt/benchmarks
 
 echo "$sizeNeeded needed for qt libraries."
 
