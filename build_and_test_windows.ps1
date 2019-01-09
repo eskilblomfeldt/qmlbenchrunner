@@ -5,7 +5,6 @@ param (
 	[int]$BuildCores = 2,
 	[switch]$Annotate,
 	[string]$QtDeclarativeVersion = "",
-	[string]$WinDeployDir = "C:\Qt\5.11.0\msvc2015\bin\",
 	[string]$FlexBisonDir = "$PWD\flex_bison\"
 )
 
@@ -21,8 +20,15 @@ function checkoutQtModule([string]$module, [string]$version) {
 function buildQtModule([string]$module, [string]$version, [int]$BuildCores) {
     checkoutQtModule $module $version
     cd $module
+	if ($module -eq "qttools"){
+		cd src/windeployqt
+    ../../../qtbase/bin/qmake
+    ../../../qmlbenchrunner/JOM/jom.exe -j $BuildCores
+	cd ../..
+	} else {
     ../qtbase/bin/qmake
     ../qmlbenchrunner/JOM/jom.exe -j $BuildCores
+	}
     cd ..
 }
 
@@ -60,8 +66,6 @@ foreach {
 }
 
 $env:Path += ";$FlexBisonDir"
-$env:Path += ";$WinDeployDir"
-
 
 popd
 Write-Host "`nVisual Studio 2017 Command Prompt variables set." -ForegroundColor Yellow
@@ -71,7 +75,6 @@ Write-Host "`nVisual Studio 2017 Command Prompt variables set." -ForegroundColor
 checkoutQtModule qtbase $QtVersion
 cd qtbase
 ./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors -opengl desktop
-#nmake
 ../qmlbenchrunner/JOM/jom.exe -j $BuildCores
 cd ..
 
@@ -80,20 +83,23 @@ buildQtModule qtdeclarative $qtdeclarative_branch $BuildCores
 buildQtModule qtquickcontrols $QtVersion $BuildCores
 buildQtModule qtquickcontrols2 $QtVersion $BuildCores
 buildQtModule qtgraphicaleffects $QtVersion $BuildCores
+buildQtModule qttools $QtVersion $BuildCores
 
 # qmlbench
 git clone --progress https://code.qt.io/qt-labs/qmlbench.git
 cd qmlbench
 git rev-parse HEAD > ../qmlbench_master_sha1.txt
 ../qtbase/bin/qmake
-#nmake
 ../qmlbenchrunner/JOM/jom.exe -j $BuildCores
-windeployqt.exe --qmldir .\benchmarks .\src\release\qmlbench.exe
+cd ../qtbase/bin
+./windeployqt.exe --qmldir ..\..\qmlbench\benchmarks ..\..\qmlbench\src\release\qmlbench.exe
+cd ../..
 
 if (Test-Path env:BADTESTS){
 	Remove-Item $env:BADTESTS -Recurse -Force
 }
 
+cd qmlbench
 src/release/qmlbench.exe --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings > ../results.json
 cd ..
 echo Label: $branch_label

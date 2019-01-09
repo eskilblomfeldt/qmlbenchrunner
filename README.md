@@ -18,7 +18,6 @@ Prerequisites
 		- requests
 
 Windows-specific Prerequsites:
-* An MSVC2015+ 32-bit Prebuilt Components installation of Qt 5.10.0 or later. (Earlier versions have not been tested)
 * ActivePerl - Download and install from http://www.activestate.com/Products/activeperl/index.mhtml
 * GPerf - Download and install from http://gnuwin32.sourceforge.net/downlinks/gperf.php
 * Flex & Bison for windows - Included with qmlbenchrunner, or downloadable from 
@@ -66,13 +65,12 @@ script. Results will still be saved to disk in "results.json" even if unable to 
 		BuildCores (Optional)
 		Annotate (Optional)
 		QtDeclarativeVersion (Optional)
-		WinDeployDir (Optional, defaults to "C:\Qt\5.11.0\msvc2015\bin\" if omitted)
 		FlexBisonDir = (Optional, defaults to "[current working directory]\flex_bison\" if omitted)
 
 	Example:
 		$env:INFLUXDBUSER=dbuser1
 		$env:INFLUXDBPASSWORD=dbuser1password
-		.\qmlbenchrunner\build_and_test_windows.ps1 -QtVersion 5.11 -BuildCores 7 -MachineName $ENV:NODE_NAME -WinDeployDir C:\Qt\msvc2015\bin -FlexBisonDir C:\flex_bison -Annotate
+		.\qmlbenchrunner\build_and_test_windows.ps1 -QtVersion 5.11 -BuildCores 7 -MachineName $ENV:NODE_NAME -FlexBisonDir C:\flex_bison -Annotate
 
 ### MacOS X: ###
 	See instructions for Linux. Some trouble has been observed with Jenkins OSX clients not setting PATH correctly. If you experience 
