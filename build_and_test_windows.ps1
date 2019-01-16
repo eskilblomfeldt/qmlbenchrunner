@@ -95,11 +95,12 @@ cd ../qtbase/bin
 ./windeployqt.exe --qmldir ..\..\qmlbench\benchmarks ..\..\qmlbench\src\release\qmlbench.exe
 cd ../..
 
+cd qmlbench
+
 if (Test-Path env:BADTESTS){
 	Remove-Item $env:BADTESTS -Recurse -Force
 }
 
-cd qmlbench
 src/release/qmlbench.exe --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings > ../results.json
 cd ..
 echo Label: $branch_label
