@@ -80,6 +80,13 @@ buildQtModule qtgraphicaleffects $1 $3
 # qmlbench
 git clone --progress https://code.qt.io/qt-labs/qmlbench.git
 cd qmlbench
+
+if [[ ! "$1" =~ ^(v?6\.|dev) ]]; then
+	# Revert a breaking change made to enable shader effects in qt6
+	# if branch is not dev or major version 6.xx
+	git revert dd516f74baf39deaa7c3aa7a85169fbc4650f314 --no-edit
+fi
+
 #Remove any bad tests that are too difficult for low-power hardware if the variable is set.
 if [ ! -z "$BADTESTS" ]; then
     echo "deleting bad tests: $BADTESTS"

@@ -89,6 +89,13 @@ buildQtModule qttools $QtVersion $BuildCores
 # qmlbench
 git clone --progress https://code.qt.io/qt-labs/qmlbench.git
 cd qmlbench
+
+if (-Not (Select-String $QtVersion -match '^(v?6\.|dev)')) {
+	# Revert a breaking change made to enable shader effects in qt6
+	# if branch is not dev or major version 6.xx
+	git revert dd516f74baf39deaa7c3aa7a85169fbc4650f314 --no-edit
+}
+
 git rev-parse HEAD > ../qmlbench_master_sha1.txt
 ../qtbase/bin/qmake
 ../qmlbenchrunner/JOM/jom.exe -j $BuildCores
