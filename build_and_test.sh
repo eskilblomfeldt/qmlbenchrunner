@@ -52,9 +52,9 @@ cd qtbase
 shopt -s nocasematch
 if [[ "$1" == "5.6" ]] && [[ "$2" != *"macOS"* ]]; then
 echo "Configuring with qt-xcb libraries because 5.6 requires this dependency and we\'re not sure it\'s installed on this system."
-	./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors -qt-xcb
+	./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors -qt-xcb $EXTRA_CONFIGURE_ARGS
 else
-	./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors
+	./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors $EXTRA_CONFIGURE_ARGS
 fi
 shopt -u nocasematch
 make -j$3
