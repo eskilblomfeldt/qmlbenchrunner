@@ -8,6 +8,16 @@ param (
     [string]$FlexBisonDir = "$PWD\flex_bison\"
 )
 
+$qmake = "$PSScriptRoot/../qtbase/bin/qmake.exe"
+
+function make() {
+    if (Get-Command "BuildConsole.exe" -ErrorAction SilentlyContinue) {
+        BuildConsole /COMMAND="nmake /C"
+    } else {
+        & $PSScriptRoot/JOM/jom.exe -j $BuildCores
+    }
+    return
+}
 
 function checkoutQtModule([string]$module, [string]$version) {
     git clone --progress https://code.qt.io/qt/$module
@@ -21,14 +31,15 @@ function buildQtModule([string]$module, [string]$version, [int]$BuildCores) {
     checkoutQtModule $module $version
     cd $module
     if ($module -eq "qttools") {
+        & $qmake
         cd src/windeployqt
-        ../../../qtbase/bin/qmake
-        ../../../qmlbenchrunner/JOM/jom.exe -j $BuildCores
+        & $qmake
+        make
         cd ../..
     }
     else {
-        ../qtbase/bin/qmake
-        ../qmlbenchrunner/JOM/jom.exe -j $BuildCores
+        & $qmake
+        make
     }
     cd ..
 }
@@ -76,7 +87,7 @@ Write-Host "`nVisual Studio 2017 Command Prompt variables set." -ForegroundColor
 checkoutQtModule qtbase $QtVersion
 cd qtbase
 ./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors -opengl desktop
-../qmlbenchrunner/JOM/jom.exe -j $BuildCores
+make
 cd ..
 
 # other modules
@@ -97,8 +108,8 @@ if ($QtVersion | Select-String -Pattern '^(v?6\.|dev)' -NotMatch) {
 }
 
 git rev-parse HEAD > ../qmlbench_master_sha1.txt
-../qtbase/bin/qmake
-../qmlbenchrunner/JOM/jom.exe -j $BuildCores
+& $qmake
+make
 cd ../qtbase/bin
 ./windeployqt.exe --qmldir ..\..\qmlbench\benchmarks ..\..\qmlbench\src\release\qmlbench.exe
 cd ../..
