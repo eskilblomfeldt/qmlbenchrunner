@@ -105,8 +105,13 @@ cd ../..
 
 cd qmlbench
 
-if (Test-Path env:BADTESTS) {
-    Remove-Item $env:BADTESTS -Recurse -Force
+if ($env:BADTESTS) {
+    $env:BADTESTS.split() | ForEach-Object {
+        if (Test-Path $_) {
+            echo "Deleting $_"
+            Remove-Item $_ -Recurse -Force
+        }
+    }
 }
 
 src/release/qmlbench.exe --json --shell frame-count benchmarks/auto/creation/ benchmarks/auto/changes/ benchmarks/auto/js benchmarks/auto/animations benchmarks/auto/bindings > ../results.json
