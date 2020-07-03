@@ -9,13 +9,31 @@ param (
 )
 
 $qmake = "$PSScriptRoot/../qtbase/bin/qmake.exe"
+$vsLoc = $env:VS_DEV_TOOLS_PATH
+$buildCommand = "$PSScriptRoot/JOM/jom.exe"
+# Fallback to nmake if JOM doesn't exist or can't be execusted.
+if (!(Test-Path $buildCommand) -or !(Get-Command $buildCommand -ErrorAction SilentlyContinue)) {
+    $buildCommand = "nmake"
+    echo "Falling back to system nmake"
+} else {
+    echo "Using JOM for compilation."
+}
 
-function make() {
+function make([string]$module) {
+    $stopwatch = [system.diagnostics.stopwatch]::StartNew()
+    # Use Incredibuild if possible.
     if (Get-Command "BuildConsole.exe" -ErrorAction SilentlyContinue) {
-        BuildConsole /COMMAND="nmake /C"
+        BuildConsole /COMMAND="$buildCommand"
     } else {
-        & $PSScriptRoot/JOM/jom.exe -j $BuildCores
+        if ($buildCommand == "nmake"){
+            set CL=/MP
+            & $buildCommand
+        } else {
+            & $buildCommand -j $BuildCores
+        }
     }
+    echo "Build of $module took $([math]::Round($stopwatch.Elapsed.TotalSeconds,0)) seconds"
+    $stopwatch.Stop()
     return
 }
 
@@ -24,6 +42,7 @@ function checkoutQtModule([string]$module, [string]$version) {
     cd $module
     git checkout $version
     git rev-parse HEAD > ([string]::Format("../{0}_{1}_sha1.txt", $module, $version))
+    echo "Checked out $module at $(git rev-parse HEAD)"
     cd ..
 }
 
@@ -34,12 +53,12 @@ function buildQtModule([string]$module, [string]$version, [int]$BuildCores) {
         & $qmake
         cd src/windeployqt
         & $qmake
-        make
+        make $module
         cd ../..
     }
     else {
         & $qmake
-        make
+        make $module
     }
     cd ..
 }
@@ -68,8 +87,17 @@ if ($qtdeclarative_branch.length -le 0) {
 
 echo "Using $QtVersion as base and $qtdeclarative_branch for qtdeclarative. Using $branch_label as label in database."
 
-#Configure Windows environment for building
-pushd 'C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\Common7\Tools\'
+#Configure Windows environment for building. Default to VS2017
+if (!($vsLoc) -or !(Test-Path $vsLoc)) {
+    echo "Using default VS installation location"
+    $vsLoc = "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\Common7\Tools\"
+    if (Get-Command "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat" -ErrorAction SilentlyContinue) {
+        $vsLoc = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\"
+    }
+}
+[regex]$re = [regex]"\\([0-9]+)\\"
+echo "Found VS $($re.Matches($vsLoc).Groups[1].Value) at $vsLoc"
+pushd $vsLoc
 cmd /c "VsDevCmd.bat&set" |
 foreach {
     if ($_ -match "=") {
@@ -80,14 +108,14 @@ foreach {
 $env:Path += ";$FlexBisonDir"
 
 popd
-Write-Host "`nVisual Studio 2017 Command Prompt variables set." -ForegroundColor Yellow
-
+Write-Host "`nVisual Studio Command Prompt variables set." -ForegroundColor Yellow
 
 # checkout and configure Qt Base
 checkoutQtModule qtbase $QtVersion
 cd qtbase
-./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors -opengl desktop
-make
+
+./configure -developer-build -nomake tests -nomake examples -release -opensource -confirm-license -no-warnings-are-errors -opengl desktop (&{If($env:EXTRA_CONFIGURE_ARGS) {$env:EXTRA_CONFIGURE_ARGS.split()}})
+make "qtbase"
 cd ..
 
 # other modules
@@ -109,7 +137,7 @@ if ($QtVersion | Select-String -Pattern '^(v?6\.|dev)' -NotMatch) {
 
 git rev-parse HEAD > ../qmlbench_master_sha1.txt
 & $qmake
-make
+make "qmlbench"
 cd ../qtbase/bin
 ./windeployqt.exe --qmldir ..\..\qmlbench\benchmarks ..\..\qmlbench\src\release\qmlbench.exe
 cd ../..
