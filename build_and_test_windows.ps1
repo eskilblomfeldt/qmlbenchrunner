@@ -25,7 +25,7 @@ function make([string]$module) {
     if (Get-Command "BuildConsole.exe" -ErrorAction SilentlyContinue) {
         BuildConsole /COMMAND="$buildCommand"
     } else {
-        if ($buildCommand == "nmake"){
+        if ($buildCommand -eq "nmake"){
             set CL=/MP
             & $buildCommand
         } else {
