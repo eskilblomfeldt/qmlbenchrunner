@@ -38,7 +38,7 @@ function make([string]$module) {
 }
 
 function checkoutQtModule([string]$module, [string]$version) {
-    git clone --progress https://code.qt.io/qt/$module
+    git clone https://code.qt.io/qt/$module
     cd $module
     git checkout $version
     git rev-parse HEAD > ([string]::Format("../{0}_{1}_sha1.txt", $module, $version))
