@@ -19,7 +19,7 @@ function buildQtModule {
     cd $1
     ../qtbase/bin/qmake
     make -j$3
-    cd ..    
+    cd ..
 }
 
 # compareSha1sAndAnnotate <module name> <branch>
@@ -69,13 +69,19 @@ buildQtModule qtgraphicaleffects $1 $3
 # qmlbench
 git clone --progress https://code.qt.io/qt-labs/qmlbench.git
 cd qmlbench
-git rev-parse HEAD > ../qmlbench_master_sha1.txt
+
+qmlbenchBranch=dev
 
 if [[ ! "$1" =~ ^(v?6\.|dev) ]]; then
 	# Revert a breaking change made to enable shader effects in qt6
 	# if branch is not dev or major version 6.xx
-	git revert dd516f74baf39deaa7c3aa7a85169fbc4650f314 --no-edit
+	qmlbenchBranch=5.15
 fi
+
+git checkout $qmlbenchBranch
+git rev-parse HEAD > ../qmlbench_${qmlbenchBranch}_sha1.txt
+
+#Remove any bad tests that are too difficult for low-power hardware if the variable is set.
 if [ ! -z "$BADTESTS" ]; then
     echo "deleting bad tests: $BADTESTS"
     rm -rf $BADTESTS
@@ -93,7 +99,7 @@ if [ "$4" == "annotate" ]; then
     compareSha1sAndAnnotate qtquickcontrols $1
     compareSha1sAndAnnotate qtquickcontrols2 $1
     compareSha1sAndAnnotate qtgraphicaleffects $1
-    compareSha1sAndAnnotate qmlbench master
+    compareSha1sAndAnnotate qmlbench $qmlbenchBranch
 fi
 
 rm -rf qtbase

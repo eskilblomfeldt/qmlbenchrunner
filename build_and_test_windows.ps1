@@ -129,13 +129,17 @@ buildQtModule qttools $QtVersion $BuildCores
 git clone --progress https://code.qt.io/qt-labs/qmlbench.git
 cd qmlbench
 
+$qmlbenchBranch = "dev"
+
 if ($QtVersion | Select-String -Pattern '^(v?6\.|dev)' -NotMatch) {
-	# Revert a breaking change made to enable shader effects in qt6
-	# if branch is not dev or major version 6.xx
-	git revert dd516f74baf39deaa7c3aa7a85169fbc4650f314 --no-edit
+	# Qt6 introduces many breaking changes to qmlbench.
+    # For qt 5.x, checkout branch 5.15
+    $qmlbenchBranch = "5.15"
 }
 
-git rev-parse HEAD > ../qmlbench_master_sha1.txt
+git checkout $qmlbenchBranch
+git rev-parse HEAD > ../qmlbench_${qmlbenchBranch}_sha1.txt
+
 & $qmake
 make "qmlbench"
 cd ../qtbase/bin
@@ -164,7 +168,7 @@ if ($Annotate) {
     compareSha1sAndAnnotate qtquickcontrols $QtVersion
     compareSha1sAndAnnotate qtquickcontrols2 $QtVersion
     compareSha1sAndAnnotate qtgraphicaleffects $QtVersion
-    compareSha1sAndAnnotate qmlbench master
+    compareSha1sAndAnnotate qmlbench $qmlbenchBranch
 }
 
 rm -PATH qtbase -Recurse -Force
